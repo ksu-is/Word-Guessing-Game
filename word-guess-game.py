@@ -48,61 +48,108 @@ def chooseDifficulty(num):
     if num == "3":
         return 3
 
+
+    
+
 ####################MAIN##################### 
 
 difficulty = 10
 word_guessed = False
 game_over = False
-guessed_letters = ''   
+guessed_letters = ''
+over='' 
+again='n'  
 intro = input('Welcome to Hangman, would you like to play? (Press any button to continue or "q" to quit)\n')
 if intro.lower() == "q":
     quit()
 
-chooseWords = input('''Please choose your word list:
-1 = Animals
-2 = Instruments
-3 = Food\n''')
-
-answer = getWord(chooseList(chooseWords))
-
-chooseDiff = input('''Please choose your difficulty:
-1 = Easy (10 wrong letters)
-2 = Normal (6 wrong letters)
-3 = Hard (3 wrong letters)\n''')
-
-difficulty = chooseDifficulty(chooseDiff)
-
-maskedWord = mask_word(answer)
-print('The hidden word will be printed below.  You have',difficulty,'wrong guesses available.\n' + 
-maskedWord)
 
 while game_over == False:
+    if over.lower() == 'q':
+        break
+    chooseWords = input('''Please choose your word list:
+    1 = Animals
+    2 = Instruments
+    3 = Food\n''')
+
+    answer = getWord(chooseList(chooseWords))
+
+    chooseDiff = input('''Please choose your difficulty:
+    1 = Easy (10 wrong letters)
+    2 = Normal (6 wrong letters)
+    3 = Hard (3 wrong letters)\n''')
+
+    difficulty = chooseDifficulty(chooseDiff)
+
+    maskedWord = mask_word(answer)
+    print('The hidden word will be printed below.  You have',difficulty,'wrong guesses available.\n' + 
+    maskedWord)
+
     while word_guessed == False:
-        print('Guessed Letters: ' + guessed_letters)
-        print('Remaining Guesses: ', difficulty)
-        guess = input("Please guess a letter: ")
-        guess = guess.lower()
-        if len(guess) != 1:
-            print('Please enter a single letter.')
-        elif guess in guessed_letters:
-            print('You have already guessed that letter')
-        elif guess not in 'abcdefghijklmnopqrstuvwxyz':
-            print('Please enter a single LETTER.')
-        else:
-            wordPart = uncover_word(answer, maskedWord, guess)
-            if wordPart == maskedWord:
-                guessed_letters += guess
-                difficulty -= 1
-                print('That letter was incorrect! Try again.\n' + wordPart)
+        if difficulty == 0:
+            print('You are all out of guesses :(')
+            over = input('Would you like to play again? (q to quit)\n')
+            if over.lower() == 'q':
+                print('Goodbye')
+                break
             else:
-                guessed_letters += guess
-                maskedWord = wordPart
-                print('That letter was correct!\n' + wordPart)
-                if wordPart == answer:
-                    word_guessed = True
-                    over = input('Would you like to play again? (q to quit)')
-                    if over == 'q':
-                        game_over = True
+                guessed_letters = ''
+                again='y'
+                difficulty=10
+        else:
+            if again =='y':
+                chooseWords = input('''Please choose your word list:
+                1 = Animals
+                2 = Instruments
+                3 = Food\n''')
+
+                answer = getWord(chooseList(chooseWords))
+
+                chooseDiff = input('''Please choose your difficulty:
+                1 = Easy (10 wrong letters)
+                2 = Normal (6 wrong letters)
+                3 = Hard (3 wrong letters)\n''')
+
+                difficulty = chooseDifficulty(chooseDiff)
+
+                maskedWord = mask_word(answer)
+                print('The hidden word will be printed below.  You have',difficulty,'wrong guesses available.\n' + 
+                maskedWord)
+
+                again='n'
+            
+            print('Guessed Letters: ' + guessed_letters)
+            print('Remaining Guesses: ', difficulty)
+            guess = input("Please guess a letter: ")
+            guess = guess.lower()
+            if len(guess) != 1:
+                print('Please enter a single letter.')
+            elif guess in guessed_letters:
+                print('You have already guessed that letter')
+            elif guess not in 'abcdefghijklmnopqrstuvwxyz':
+                print('Please enter a single LETTER.')
+            else:
+                wordPart = uncover_word(answer, maskedWord, guess)
+                if wordPart == maskedWord:
+                    guessed_letters += guess
+                    difficulty -= 1
+                    print('That letter was incorrect! Try again.\n' + wordPart)
+                else:
+                    guessed_letters += guess
+                    maskedWord = wordPart
+                    print('That letter was correct!\n' + wordPart)
+                    if wordPart == answer:
+                        word_guessed = True
+                        over = input('Would you like to play again?\n (q to quit)')
+                        if over == 'q':
+                            print('Goodbye')
+                            break
+                        else:
+                            word_guessed = False
+                            guessed_letters = ""
+                            again = 'y'
+                            
+                         
 
 
 
